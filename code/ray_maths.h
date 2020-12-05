@@ -5,6 +5,20 @@
 
 #define PI 3.14159256
 
+f32 RandomFloat(){
+    return rand() / (RAND_MAX + 1.0f);
+}
+
+f32 RandomFloat(f32 min, f32 max){
+    return min + (max - min)*RandomFloat();
+}
+
+f32 Clamp(f32 x, f32 min, f32 max){
+    if(x < min) return min;
+    if(x > max) return max;
+    return x;
+}
+
 f32 ToRadians(f32 degrees){
     return degrees*PI/180.0f;
 }
@@ -56,6 +70,10 @@ f32 Vec3Dot(Vec3 a, Vec3 b){
     return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
+f32 Vec3Length(Vec3 a){
+    return sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
+}
+
 Vec3 operator+(Vec3 a, Vec3 b){
     return Vec3(a.x + b.x, a.y + b.y, a.z + b.z);
 }
@@ -66,6 +84,11 @@ Vec3 operator-(Vec3 a, Vec3 b){
 
 Vec3 operator*(Vec3 a, f32 b){
     return Vec3(a.x * b, a.y * b, a.z * b);
+}
+
+Vec3 Vec3Reflect(Vec3 a, Vec3 n){
+    n = NormaliseVec3(n);
+    return a - n*Vec3Dot(a, n)*2;
 }
 
 #endif //RAY_MATHS_H

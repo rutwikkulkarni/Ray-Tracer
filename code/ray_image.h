@@ -36,20 +36,42 @@ struct Image{
 
 Image CreateImage(u32 width, u32 height){
     Image image;
-    image.width = 1280;
-    image.height = 720;
+    image.width = width;
+    image.height = height;
     image.size_bytes = sizeof(u32) * image.width * image.height;
     image.pixels = (u32 *)malloc(image.size_bytes);
     
     return image;
 }
 
-void SetU32Pixel(u32 *pixel, Vec3 colour){
+void SetU32Pixel(u32 *pixel, Vec3 colour, u32 samples_per_pixel){
     u8 a = 0x00;
-    u8 r = colour.r;
-    u8 g = colour.g;
-    u8 b = colour.b;
+    f32 scale = 1.0f / samples_per_pixel;
+    //gamma correction
+    //colour.r = sqrt(scale * colour.r);
+    //colour.g = sqrt(scale * colour.g);
+    //colour.b = sqrt(scale * colour.b);
+    
+    u8 r = 255.0f * Clamp(colour.r * scale, 0.0f, 0.99f);
+    u8 g = 255.0f * Clamp(colour.g * scale, 0.0f, 0.99f);
+    u8 b = 255.0f * Clamp(colour.b * scale, 0.0f, 0.99f);
+    
     *pixel = (a << 24) | (r << 16) | (g << 8) | b;
+}
+
+void SetU32Pixel(u32 *pixel, u32 location, Vec3 colour, u32 samples_per_pixel){
+    u8 a = 0x00;
+    f32 scale = 1.0f / samples_per_pixel;
+    //gamma correction
+    //colour.r = sqrt(scale * colour.r);
+    //colour.g = sqrt(scale * colour.g);
+    //colour.b = sqrt(scale * colour.b);
+    
+    u8 r = 255.0f * Clamp(colour.r * scale, 0.0f, 0.99f);
+    u8 g = 255.0f * Clamp(colour.g * scale, 0.0f, 0.99f);
+    u8 b = 255.0f * Clamp(colour.b * scale, 0.0f, 0.99f);
+    
+    pixel[location] = (a << 24) | (r << 16) | (g << 8) | b;
 }
 
 void WriteImageToBitmap(char *file_name, Image image){
